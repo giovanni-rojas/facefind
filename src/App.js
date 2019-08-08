@@ -40,11 +40,11 @@ class App extends Component {
   onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.input })
     app.models.predict(
-      Clarifai.COLOR_MODEL, 
+      Clarifai.FACE_DETECT_MODEL, 
       this.state.input)      //wouldn't work with this.state.imageUrl (idk why)
     .then(
     function(response) {     //from https://www.clarifai.com/models/face-detection-image-recognition-model-a403429f2ddf4b49b307e318f00e528b-detection
-      console.log(response);      
+      console.log(response.outputs[0].data.regions[0].region_info.bounding_box);      
     },
     function(err) {
       // there was an error
