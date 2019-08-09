@@ -29,8 +29,27 @@ class App extends Component {
     super();
     this.state = {
       input: '',
-      imageUrl: ''
+      imageUrl: '',
+      box: []
     }
+  }
+
+  calculateBoxLocation = (data) => {
+    const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;    //bounding box values as percentages
+    const image = document.getElementById('inputImage');
+    const width = Number(image.width);    //of input image
+    const height = Number(image.height);  //of input image
+    return {
+      leftCol: clarifaiFace.left_col * width,
+      topRow: clarifaiFace.top_row * height,
+      rightCol: width - (clarifaiFace.right_col * width),
+      bottomRom: height - (clarifaiFace.bottom_row * height),
+    }
+  }
+
+  displayFaceBox = (box) => {
+    this.setState({ box: box });
+    console.log(box);
   }
 
   onInputChange = (event) => {
@@ -39,17 +58,12 @@ class App extends Component {
 
   onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.input })
-    app.models.predict(
-      Clarifai.FACE_DETECT_MODEL, 
-      this.state.input)      //wouldn't work with this.state.imageUrl (idk why)
-    .then(
-    function(response) {     //from https://www.clarifai.com/models/face-detection-image-recognition-model-a403429f2ddf4b49b307e318f00e528b-detection
-      console.log(response.outputs[0].data.regions[0].region_info.bounding_box);      
-    },
-    function(err) {
-      // there was an error
-    }
-  );
+    app.models
+      .predict(
+        Clarifai.FACE_DETECT_MODEL, 
+        this.state.input)      //wouldn't work with this.state.imageUrl (idk why)
+      .then(response => this.displayFaceBox(this.calculateBoxLocation(response)))    //answer: setState is asynchronous, so React hadn't finished updating imageUrl's state. Can fix w/ a callback setState(updater, callback)function(response) {     //from https://www.clarifai.com/models/face-detection-image-recognition-model-a403429f2ddf4b49b307e318f00e528b-detection
+      .catch(err => console.log(err));
   }
 
   render() {
