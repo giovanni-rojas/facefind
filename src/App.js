@@ -26,23 +26,25 @@ const particleOptions = {
   }
 }
 
+const initialState = {
+  input: '',
+  imageUrl: '',
+  box: [],
+  route: 'signin',
+  isSignedIn: false,
+  user: {
+    id: '',
+    name: '',
+    email: '',
+    entries: 0,
+    joined: ''
+  }
+}
+
 class App extends Component {
   constructor() {
     super();
-    this.state = {
-      input: '',
-      imageUrl: '',
-      box: [],
-      route: 'signin',
-      isSignedIn: false,
-      user: {
-        id: '',
-        name: '',
-        email: '',
-        entries: 0,
-        joined: ''
-      }
-    }
+    this.state = initialState;
   }
 
   // componentDidMount() {
@@ -105,8 +107,9 @@ class App extends Component {
                   })
                     .then(response => response.json())
                     .then(count => {
-                      this.setState(Object.assign(this.state.user, { entries: count }))
+                      this.setState(Object.assign(this.state.user, { entries: count })) //somehow magic that updates instead of changes 'user'
                     })
+                    .catch(console.log)
         }
         this.displayFaceBox(this.calculateBoxLocation(response))    //answer: setState is asynchronous, so React hadn't finished updating imageUrl's state. Can fix w/ a callback setState(updater, callback)function(response) {     //from https://www.clarifai.com/models/face-detection-image-recognition-model-a403429f2ddf4b49b307e318f00e528b-detection
       })
@@ -115,7 +118,7 @@ class App extends Component {
 
   onRouteChange = (route) => {
     if (route === 'signout') {
-      this.setState({ isSignedIn: false })
+      this.setState(initialState)
     }
     else if (route === 'home') {
       this.setState({ isSignedIn: true })
