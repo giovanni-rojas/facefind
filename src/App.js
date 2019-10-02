@@ -5,14 +5,9 @@ import Logo from './components/Logo/Logo';
 import Rank from './components/Rank/Rank';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import FacialRecognition from './components/FacialRecognition/FacialRecognition';
-import Clarifai from 'clarifai';
 import Signin from './components/Signin/Signin';
 import Register from './components/Register/Register';
 import './App.css';
-
-const app = new Clarifai.App({
-  apiKey: 'dde007178c284b6c8f6780b5d11e456c'
-});
 
 const particleOptions = {
   particles: {  
@@ -90,26 +85,32 @@ class App extends Component {
 
   onPictureSubmit = () => {
     this.setState({ imageUrl: this.state.input })
-    app.models
-      .predict(
-        Clarifai.FACE_DETECT_MODEL, 
-        this.state.input)      //wouldn't work with this.state.imageUrl (idk why)
+      fetch('http://localhost:3001/imageurl', 
+      {
+        method: 'post',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(
+        {
+          input: this.state.input
+        })
+      })
+      .then(response => response.json())
       .then(response => {
         if (response) {
           fetch('http://localhost:3001/image', 
-                  {
-                    method: 'put',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(
-                    {
-                      id: this.state.user.id
-                    })
-                  })
-                    .then(response => response.json())
-                    .then(count => {
-                      this.setState(Object.assign(this.state.user, { entries: count })) //somehow magic that updates instead of changes 'user'
-                    })
-                    .catch(console.log)
+          {
+            method: 'put',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(
+            {
+              id: this.state.user.id
+            })
+          })
+            .then(response => response.json())
+            .then(count => {
+              this.setState(Object.assign(this.state.user, { entries: count })) //somehow magic that updates instead of changes 'user'
+            })
+            .catch(console.log)
         }
         this.displayFaceBox(this.calculateBoxLocation(response))    //answer: setState is asynchronous, so React hadn't finished updating imageUrl's state. Can fix w/ a callback setState(updater, callback)function(response) {     //from https://www.clarifai.com/models/face-detection-image-recognition-model-a403429f2ddf4b49b307e318f00e528b-detection
       })
