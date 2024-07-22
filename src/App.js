@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import Particles from 'react-particles-js';
+//import Particles from 'react-particles-js';
+import ParticlesBg from 'particles-bg';
 import Navigation from './components/Navigation/Navigation';
 import Logo from './components/Logo/Logo';
 import Rank from './components/Rank/Rank';
@@ -9,22 +10,26 @@ import Signin from './components/Signin/Signin';
 import Register from './components/Register/Register';
 import './App.css';
 
-const particleOptions = {
-  particles: {  
-    number: {
-      value: 150,
-      density: {
-        enable: true,
-        value_area: 800
-      }
-    }
-  }
-}
+// const particleOptions = {
+//   particles: {  
+//     number: {
+//       value: 150,
+//       density: {
+//         enable: true,
+//         value_area: 800
+//       }
+//     }
+//   }
+// }
+
+// const app = new Clarifai.App( {
+//   apiKey: 'ef9369da179846819e35a10febe67441'
+// });
 
 const initialState = {
   input: '',
   imageUrl: '',
-  box: [],
+  box: {},
   route: 'signin',
   isSignedIn: false,
   user: {
@@ -84,8 +89,9 @@ class App extends Component {
   }
 
   onPictureSubmit = () => {
-    this.setState({ imageUrl: this.state.input })
-      fetch('https://vast-hollows-81212.herokuapp.com/imageurl', 
+    this.setState({ imageUrl: this.state.input });
+      
+      fetch('http://localhost:3000/imageurl', 
       {
         method: 'post',
         headers: {'Content-Type': 'application/json'},
@@ -97,7 +103,7 @@ class App extends Component {
       .then(response => response.json())
       .then(response => {
         if (response) {
-          fetch('https://vast-hollows-81212.herokuapp.com/image', 
+          fetch('http://localhost:3000/image', 
           {
             method: 'put',
             headers: {'Content-Type': 'application/json'},
@@ -115,6 +121,26 @@ class App extends Component {
         this.displayFaceBox(this.calculateBoxLocation(response))    //answer: setState is asynchronous, so React hadn't finished updating imageUrl's state. Can fix w/ a callback setState(updater, callback)function(response) {     //from https://www.clarifai.com/models/face-detection-image-recognition-model-a403429f2ddf4b49b307e318f00e528b-detection
       })
       .catch(err => console.log(err));
+
+      // app.models.predict('face-detection', this.state.input)
+      //   .then(response => {
+      //     console.log('hi', response)
+      //     if (response) {
+      //       fetch('http://localhost:3001/image', {
+      //         method: 'put',
+      //         headers: {'Content-Type': 'application/json'},
+      //         body: JSON.stringify({
+      //           id: this.state.user.id
+      //         })
+      //       })
+      //         .then(response => response.json())
+      //         .then(count => {
+      //           this.setState(Object.assign(this.state.user, { entries: count}))
+      //         })
+      //     }
+      //     this.displayFaceBox(this.calculateBoxLocation(response))
+      //   })
+      //   .catch(err => console.log(err));
   }
 
   onRouteChange = (route) => {
@@ -131,10 +157,7 @@ class App extends Component {
     const { isSignedIn, imageUrl, route, box } = this.state;
     return (
       <div className="App">
-        <Particles 
-          className='particles'
-          params={ particleOptions }
-        />
+        <ParticlesBg type="circle" bg={true} />
         <Navigation isSignedIn={ isSignedIn } onRouteChange={ this.onRouteChange }/>
         { route === 'home' 
           ? <div>
@@ -153,6 +176,7 @@ class App extends Component {
         }
       </div>
     );
+
   }
 }
 
