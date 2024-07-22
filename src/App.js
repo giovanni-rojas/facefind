@@ -26,11 +26,53 @@ import './App.css';
 //   apiKey: 'ef9369da179846819e35a10febe67441'
 // });
 
+const returnClarifaiRequestOptions = (imageUrl) => {
+
+  // Your PAT (Personal Access Token) can be found in the Account's Security section
+  const PAT = '03c4f8ee2959479d872414840f56bb94';
+  // Specify the correct user_id/app_id pairings
+  // Since you're making inferences outside your app's scope
+  const USER_ID = 'dd7dgnk1wn7b';       
+  const APP_ID = 'test-face-detect';
+  // Change these to whatever model and image URL you want to use
+  const MODEL_ID = 'face-detection';   
+  const IMAGE_URL = imageUrl;
+
+  const raw = JSON.stringify({
+    "user_app_id": {
+        "user_id": USER_ID,
+        "app_id": APP_ID
+    },
+    "inputs": [
+        {
+            "data": {
+                "image": {
+                    "url": IMAGE_URL
+                }
+            }
+        }
+    ]
+  });
+
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Key ' + PAT
+    },
+    body: raw
+  };
+
+  return requestOptions;
+
+}
+
 const initialState = {
   input: '',
   imageUrl: '',
   box: {},
-  route: 'signin',
+  //route: 'signin',
+  route: 'home',
   isSignedIn: false,
   user: {
     id: '',
@@ -88,39 +130,44 @@ class App extends Component {
     this.setState({input: event.target.value});
   }
 
-  onPictureSubmit = () => {
+  onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.input });
+
+    
+    fetch("https://api.clarifai.com/v2/models/" + 'face-detection' + "/outputs", returnClarifaiRequestOptions(this.state.input))
       
-      fetch('http://localhost:3000/imageurl', 
-      {
-        method: 'post',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(
+    // fetch('http://localhost:3000/imageurl', 
+    // {
+    //   method: 'post',
+    //   headers: {'Content-Type': 'application/json'},
+    //   body: JSON.stringify(
+    //   {
+    //     input: this.state.input
+    //   })
+    // })
+
+    .then(response => response.json())
+    .then(response => {
+      console.log('hi', response)
+      if (response) {
+        fetch('http://localhost:3000/image', 
         {
-          input: this.state.input
-        })
-      })
-      .then(response => response.json())
-      .then(response => {
-        if (response) {
-          fetch('http://localhost:3000/image', 
+          method: 'put',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(
           {
-            method: 'put',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(
-            {
-              id: this.state.user.id
-            })
+            id: this.state.user.id
           })
-            .then(response => response.json())
-            .then(count => {
-              this.setState(Object.assign(this.state.user, { entries: count })) //somehow magic that updates instead of changes 'user'
-            })
-            .catch(console.log)
-        }
-        this.displayFaceBox(this.calculateBoxLocation(response))    //answer: setState is asynchronous, so React hadn't finished updating imageUrl's state. Can fix w/ a callback setState(updater, callback)function(response) {     //from https://www.clarifai.com/models/face-detection-image-recognition-model-a403429f2ddf4b49b307e318f00e528b-detection
-      })
-      .catch(err => console.log(err));
+        })
+          .then(response => response.json())
+          .then(count => {
+            this.setState(Object.assign(this.state.user, { entries: count })) //somehow magic that updates instead of changes 'user'
+          })
+          .catch(console.log)
+      }
+      this.displayFaceBox(this.calculateBoxLocation(response))    //answer: setState is asynchronous, so React hadn't finished updating imageUrl's state. Can fix w/ a callback setState(updater, callback)function(response) {     //from https://www.clarifai.com/models/face-detection-image-recognition-model-a403429f2ddf4b49b307e318f00e528b-detection
+    })
+    .catch(err => console.log(err));
 
       // app.models.predict('face-detection', this.state.input)
       //   .then(response => {
@@ -165,7 +212,7 @@ class App extends Component {
               <Rank name={ this.state.user.name } entries={ this.state.user.entries }/>
               <ImageLinkForm 
                 onInputChange={ this.onInputChange } 
-                onButtonSubmit={ this.onPictureSubmit } />
+                onButtonSubmit={ this.onButtonSubmit } />
               <FacialRecognition box={ box } imageUrl={ imageUrl }/>
             </div> 
           : (
