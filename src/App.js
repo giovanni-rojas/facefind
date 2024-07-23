@@ -22,9 +22,9 @@ import './App.css';
 //   }
 // }
 
-const app = new Clarifai.App( {
-  apiKey: 'a8614656d9214e8cb4ecc3765e376f3f'
-});
+// const app = new Clarifai.App( {
+//   apiKey: 'a8614656d9214e8cb4ecc3765e376f3f'
+// });
 
 const returnClarifaiRequestOptions = (imageUrl) => {
 
@@ -90,7 +90,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    fetch('http://localhost:3000/')
+    fetch('https://agile-brushlands-08884.herokuapp.com/')
       .then(response => response.json())
       .then(console.log)  //same as data => console.log(data)
   }
@@ -150,7 +150,7 @@ class App extends Component {
     .then(response => {
       console.log('hi', response)
       if (response) {
-        fetch('http://localhost:3000/image', 
+        fetch('https://agile-brushlands-08884.herokuapp.com:3000/image', 
         {
           method: 'put',
           headers: {'Content-Type': 'application/json'},
