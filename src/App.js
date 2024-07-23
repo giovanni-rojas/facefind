@@ -92,7 +92,7 @@ class App extends Component {
   componentDidMount() {
     fetch('https://agile-brushlands-08884.herokuapp.com/')
       .then(response => response.json())
-      .then(console.log)  //same as data => console.log(data)
+      .then(console.log)  //same as data =>s console.log(data)
   }
 
   loadUser = (data) => {
@@ -134,7 +134,7 @@ class App extends Component {
     this.setState({ imageUrl: this.state.input });
 
     
-    fetch("https://api.clarifai.com/v2/models/" + 'face-detection' + "/outputs", returnClarifaiRequestOptions(this.state.input))
+    fetch("http://api.clarifai.com/v2/models/" + 'face-detection' + "/outputs", returnClarifaiRequestOptions(this.state.input))
       
     // fetch('http://localhost:3000/imageurl', 
     // {
@@ -153,6 +153,7 @@ class App extends Component {
         fetch('https://agile-brushlands-08884.herokuapp.com:3000/image', 
         {
           method: 'put',
+          mode: "no-cors",
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify(
           {
