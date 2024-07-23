@@ -21,7 +21,6 @@ class Signin extends React.Component {
 		fetch('https://agile-brushlands-08884.herokuapp.com/signin', 
 			{
 				method: 'post',
-				mode: "no-cors",
 				headers: {'Content-Type': 'application/json'},
 				body: JSON.stringify(
 				{

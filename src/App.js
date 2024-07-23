@@ -153,7 +153,6 @@ class App extends Component {
         fetch('https://agile-brushlands-08884.herokuapp.com:3000/image', 
         {
           method: 'put',
-          mode: "no-cors",
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify(
           {
