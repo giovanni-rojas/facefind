@@ -10,22 +10,6 @@ import Signin from './components/Signin/Signin';
 import Register from './components/Register/Register';
 import './App.css';
 
-// const particleOptions = {
-//   particles: {  
-//     number: {
-//       value: 150,
-//       density: {
-//         enable: true,
-//         value_area: 800
-//       }
-//     }
-//   }
-// }
-
-// const app = new Clarifai.App( {
-//   apiKey: 'a8614656d9214e8cb4ecc3765e376f3f'
-// });
-
 const returnClarifaiRequestOptions = (imageUrl) => {
 
   // Your PAT (Personal Access Token) can be found in the Account's Security section
@@ -96,8 +80,7 @@ class App extends Component {
   // }
 
   loadUser = (data) => {
-    this.setState(
-      {
+    this.setState({
         user:
         {
           id: data.id,
