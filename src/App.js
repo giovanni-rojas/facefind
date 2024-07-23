@@ -73,11 +73,11 @@ class App extends Component {
     this.state = initialState;
   }
 
-  // componentDidMount() {
-  //   fetch('https://agile-brushlands-08884-f69c8fdf1fe8.herokuapp.com/')
-  //     .then(response => response.json())
-  //     .then(console.log)  //same as data =>s console.log(data)
-  // }
+  componentDidMount() {
+    fetch('http://localhost:3000/')
+      .then(response => response.json())
+      .then(console.log)  //same as data =>s console.log(data)
+  }
 
   loadUser = (data) => {
     this.setState({
