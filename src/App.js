@@ -22,9 +22,9 @@ import './App.css';
 //   }
 // }
 
-// const app = new Clarifai.App( {
-//   apiKey: 'ef9369da179846819e35a10febe67441'
-// });
+const app = new Clarifai.App( {
+  apiKey: 'a8614656d9214e8cb4ecc3765e376f3f'
+});
 
 const returnClarifaiRequestOptions = (imageUrl) => {
 
@@ -89,11 +89,11 @@ class App extends Component {
     this.state = initialState;
   }
 
-  // componentDidMount() {
-  //   fetch('http://localhost:3001/')
-  //     .then(response => response.json())
-  //     .then(console.log)  //same as data => console.log(data)
-  // }
+  componentDidMount() {
+    fetch('http://localhost:3000/')
+      .then(response => response.json())
+      .then(console.log)  //same as data => console.log(data)
+  }
 
   loadUser = (data) => {
     this.setState(
