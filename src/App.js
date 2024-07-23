@@ -73,11 +73,6 @@ class App extends Component {
     this.state = initialState;
   }
 
-  // componentDidMount() {
-  //   fetch('https://agile-brushlands-08884-f69c8fdf1fe8.herokuapp.com/')
-  //     .then(response => response.json())
-  //     .then(console.log)  //same as data =>s console.log(data)
-  // }
 
   loadUser = (data) => {
     this.setState({
@@ -134,6 +129,7 @@ class App extends Component {
       console.log('hi', response)
       if (response) {
         fetch('https://agile-brushlands-08884-f69c8fdf1fe8.herokuapp.com/image', 
+        //fetch('http://localhost:3000/image', 
         {
           method: 'put',
           headers: {'Content-Type': 'application/json'},
