@@ -90,7 +90,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    fetch('https://agile-brushlands-08884.herokuapp.com/')
+    fetch('https://agile-brushlands-08884-f69c8fdf1fe8.herokuapp.com/')
       .then(response => response.json())
       .then(console.log)  //same as data =>s console.log(data)
   }
@@ -150,7 +150,7 @@ class App extends Component {
     .then(response => {
       console.log('hi', response)
       if (response) {
-        fetch('https://agile-brushlands-08884.herokuapp.com:3000/image', 
+        fetch('https://agile-brushlands-08884-f69c8fdf1fe8.herokuapp.com/image', 
         {
           method: 'put',
           headers: {'Content-Type': 'application/json'},
