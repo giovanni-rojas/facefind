@@ -10,47 +10,6 @@ import Signin from './components/Signin/Signin';
 import Register from './components/Register/Register';
 import './App.css';
 
-const returnClarifaiRequestOptions = (imageUrl) => {
-
-  // Your PAT (Personal Access Token) can be found in the Account's Security section
-  const PAT = '03c4f8ee2959479d872414840f56bb94';
-  // Specify the correct user_id/app_id pairings
-  // Since you're making inferences outside your app's scope
-  const USER_ID = 'dd7dgnk1wn7b';       
-  const APP_ID = 'test-face-detect';
-  // Change these to whatever model and image URL you want to use
-  const MODEL_ID = 'face-detection';   
-  const IMAGE_URL = imageUrl;
-
-  const raw = JSON.stringify({
-    "user_app_id": {
-        "user_id": USER_ID,
-        "app_id": APP_ID
-    },
-    "inputs": [
-        {
-            "data": {
-                "image": {
-                    "url": IMAGE_URL
-                }
-            }
-        }
-    ]
-  });
-
-  const requestOptions = {
-    method: 'POST',
-    headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Key ' + PAT
-    },
-    body: raw
-  };
-
-  return requestOptions;
-
-}
-
 const initialState = {
   input: '',
   imageUrl: '',
@@ -108,20 +67,15 @@ class App extends Component {
 
   onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.input });
-
-    
-    fetch("http://api.clarifai.com/v2/models/" + 'face-detection' + "/outputs", returnClarifaiRequestOptions(this.state.input))
-      
-    // fetch('http://localhost:3000/imageurl', 
-    // {
-    //   method: 'post',
-    //   headers: {'Content-Type': 'application/json'},
-    //   body: JSON.stringify(
-    //   {
-    //     input: this.state.input
-    //   })
-    // })
-
+    fetch('https://agile-brushlands-08884-f69c8fdf1fe8.herokuapp.com/imageurl', 
+    {
+      method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(
+      {
+        input: this.state.input
+      })
+    })
     .then(response => response.json())
     .then(response => {
       console.log('hi', response)
@@ -145,26 +99,6 @@ class App extends Component {
       this.displayFaceBox(this.calculateBoxLocation(response))    //answer: setState is asynchronous, so React hadn't finished updating imageUrl's state. Can fix w/ a callback setState(updater, callback)function(response) {     //from https://www.clarifai.com/models/face-detection-image-recognition-model-a403429f2ddf4b49b307e318f00e528b-detection
     })
     .catch(err => console.log(err));
-
-      // app.models.predict('face-detection', this.state.input)
-      //   .then(response => {
-      //     console.log('hi', response)
-      //     if (response) {
-      //       fetch('http://localhost:3001/image', {
-      //         method: 'put',
-      //         headers: {'Content-Type': 'application/json'},
-      //         body: JSON.stringify({
-      //           id: this.state.user.id
-      //         })
-      //       })
-      //         .then(response => response.json())
-      //         .then(count => {
-      //           this.setState(Object.assign(this.state.user, { entries: count}))
-      //         })
-      //     }
-      //     this.displayFaceBox(this.calculateBoxLocation(response))
-      //   })
-      //   .catch(err => console.log(err));
   }
 
   onRouteChange = (route) => {
