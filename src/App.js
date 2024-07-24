@@ -117,7 +117,7 @@ class App extends Component {
     const { isSignedIn, imageUrl, route, boxes } = this.state;
     return (
       <div className="App">
-        <ParticlesBg color="#adadad" type="cobweb" bg={true} />
+        <ParticlesBg color="#d6d6d6" type="cobweb" bg={true} />
         <Navigation isSignedIn={ isSignedIn } onRouteChange={ this.onRouteChange }/>
         { route === 'home' 
           ? <div>
