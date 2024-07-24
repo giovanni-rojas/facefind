@@ -76,7 +76,7 @@ class App extends Component {
       body: JSON.stringify(
       {
         input: this.state.input
-      }),
+      })
     })
     .then(response => response.json())
     .then(result => {
@@ -90,7 +90,7 @@ class App extends Component {
           body: JSON.stringify(
           {
             id: this.state.user.id
-          }),
+          })
         })
           .then(response => response.json())
           .then(count => {
