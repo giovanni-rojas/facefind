@@ -126,8 +126,8 @@ class App extends Component {
     .then(response => {
       console.log('hi', response)
       if (response) {
-        //fetch('https://agile-brushlands-08884-f69c8fdf1fe8.herokuapp.com/image', 
-        fetch('http://localhost:3000/image', 
+        fetch('https://agile-brushlands-08884-f69c8fdf1fe8.herokuapp.com/image', 
+        //fetch('http://localhost:3000/image', 
         {
           method: 'put',
           headers: {'Content-Type': 'application/json'},
