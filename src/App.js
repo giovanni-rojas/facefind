@@ -13,7 +13,7 @@ import './App.css';
 const initialState = {
   input: '',
   imageUrl: '',
-  box: {},
+  boxes: [],
   route: 'signin',
   //route: 'home',
   isSignedIn: false,
@@ -44,20 +44,22 @@ class App extends Component {
   }
 
   calculateBoxLocation = (data) => {
-    const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;    //bounding box values as percentages
     const image = document.getElementById('inputImage');
     const width = Number(image.width);    //of input image
     const height = Number(image.height);  //of input image
-    return {
-      leftCol: clarifaiFace.left_col * width,
-      topRow: clarifaiFace.top_row * height,
-      rightCol: width - (clarifaiFace.right_col * width),
-      bottomRow: height - (clarifaiFace.bottom_row * height)
-    }
-  }
+    return data.map(face => {
+      const clarifaiFace = face.region_info.bounding_box;
+      return {
+        leftCol: clarifaiFace.left_col * width,
+        topRow: clarifaiFace.top_row * height,
+        rightCol: width - (clarifaiFace.right_col * width),
+        bottomRow: height - (clarifaiFace.bottom_row * height)
+      };
+    })
+  };
 
   displayFaceBox = (box) => {
-    this.setState({ box: box });
+    this.setState({ boxes: box });
     //console.log(box);
   }
 
@@ -74,12 +76,12 @@ class App extends Component {
       body: JSON.stringify(
       {
         input: this.state.input
-      })
+      }),
     })
     .then(response => response.json())
-    .then(response => {
-      console.log('hi', response)
-      if (response) {
+    .then(result => {
+      console.log('hi', result);
+      if (result) {
         fetch('https://agile-brushlands-08884-f69c8fdf1fe8.herokuapp.com/image', 
         //fetch('http://localhost:3000/image', 
         {
@@ -88,7 +90,7 @@ class App extends Component {
           body: JSON.stringify(
           {
             id: this.state.user.id
-          })
+          }),
         })
           .then(response => response.json())
           .then(count => {
@@ -96,10 +98,10 @@ class App extends Component {
           })
           .catch(console.log)
       }
-      this.displayFaceBox(this.calculateBoxLocation(response))    //answer: setState is asynchronous, so React hadn't finished updating imageUrl's state. Can fix w/ a callback setState(updater, callback)function(response) {     //from https://www.clarifai.com/models/face-detection-image-recognition-model-a403429f2ddf4b49b307e318f00e528b-detection
+      this.displayFaceBox(this.calculateBoxLocation(result))    //answer: setState is asynchronous, so React hadn't finished updating imageUrl's state. Can fix w/ a callback setState(updater, callback)function(response) {     //from https://www.clarifai.com/models/face-detection-image-recognition-model-a403429f2ddf4b49b307e318f00e528b-detection
     })
-    .catch(err => console.log(err));
-  }
+    .catch(err => console.log("error", err));
+  };
 
   onRouteChange = (route) => {
     if (route === 'signout') {
@@ -112,7 +114,7 @@ class App extends Component {
   }
 
   render() {
-    const { isSignedIn, imageUrl, route, box } = this.state;
+    const { isSignedIn, imageUrl, route, boxes } = this.state;
     return (
       <div className="App">
         <ParticlesBg type="circle" bg={true} />
@@ -124,7 +126,7 @@ class App extends Component {
               <ImageLinkForm 
                 onInputChange={ this.onInputChange } 
                 onButtonSubmit={ this.onButtonSubmit } />
-              <FacialRecognition box={ box } imageUrl={ imageUrl }/>
+              <FacialRecognition boxes={ boxes } imageUrl={ imageUrl }/>
             </div> 
           : (
               route === 'signin' 
