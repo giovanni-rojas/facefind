@@ -1,19 +1,15 @@
 import React, { Component } from 'react';
-//import Particles from 'react-particles-js';
 import ParticlesBg from 'particles-bg';
-import Navigation from './components/Navigation/Navigation';
 import Logo from './components/Logo/Logo';
-import Rank from './components/Rank/Rank';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import FacialRecognition from './components/FacialRecognition/FacialRecognition';
-import Signin from './components/Signin/Signin';
-import Register from './components/Register/Register';
 import './App.css';
 
 const initialState = {
   input: '',
   imageUrl: '',
   boxes: [],
+  file: null,
   submissionCount: sessionStorage.getItem('submissionCount') ? parseInt(sessionStorage.getItem('submissionCount')) : 0
 }
 
@@ -41,23 +37,31 @@ class App extends Component {
 
   displayFaceBox = (boxes) => {
     this.setState({ boxes });
-    //console.log(box);
   }
 
   onInputChange = (event) => {
-    this.setState({input: event.target.value});
+    this.setState({input: event.target.value, file:null });
   }
 
+  onFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        this.setState({ input: '', file: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   onButtonSubmit = () => {
-    this.setState({ imageUrl: this.state.input });
+    const { input, file } = this.state;
+    const data = file ? { file } : { input };
     fetch('https://agile-brushlands-08884-f69c8fdf1fe8.herokuapp.com/imageurl', 
     {
       method: 'post',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(
-      {
-        input: this.state.input
-      })
+      body: JSON.stringify(data)
     })
     .then(response => response.json())
     .then(result => {
@@ -81,7 +85,8 @@ class App extends Component {
         <Logo />
         <ImageLinkForm 
           onInputChange={ this.onInputChange } 
-          onButtonSubmit={ this.onButtonSubmit } />
+          onButtonSubmit={ this.onButtonSubmit }
+          onFileUpload={this.onFileUpload} />
         <h1>Submission Count: {this.state.submissionCount}</h1>
         <FacialRecognition boxes={ boxes } imageUrl={ imageUrl }/>
       </div>
