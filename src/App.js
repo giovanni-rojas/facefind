@@ -14,6 +14,7 @@ const initialState = {
   input: '',
   imageUrl: '',
   boxes: [],
+  submissionCount: sessionStorage.getItem('submissionCount') ? parseInt(sessionStorage.getItem('submissionCount')) : 0
 }
 
 class App extends Component {
@@ -62,6 +63,11 @@ class App extends Component {
     .then(result => {
       if (result) {
         this.displayFaceBox(this.calculateBoxLocation(result));
+        this.setState(prevState => {
+          const newCount = prevState.submissionCount + 1;
+          sessionStorage.setItem('submissionCount', newCount);  // Save to sessionStorage
+          return { submissionCount: newCount };
+        });
       }
     })
     .catch(err => console.log('Error:', err));
@@ -76,6 +82,7 @@ class App extends Component {
         <ImageLinkForm 
           onInputChange={ this.onInputChange } 
           onButtonSubmit={ this.onButtonSubmit } />
+        <h1>Submission Count: {this.state.submissionCount}</h1>
         <FacialRecognition boxes={ boxes } imageUrl={ imageUrl }/>
       </div>
     );
