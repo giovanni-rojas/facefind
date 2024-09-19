@@ -14,16 +14,6 @@ const initialState = {
   input: '',
   imageUrl: '',
   boxes: [],
-  route: 'signin',
-  //route: 'home',
-  isSignedIn: false,
-  user: {
-    id: '',
-    name: '',
-    email: '',
-    entries: 0,
-    joined: ''
-  }
 }
 
 class App extends Component {
@@ -32,16 +22,6 @@ class App extends Component {
     this.state = initialState;
   }
 
-
-  loadUser = (data) => {
-    this.setState({user: {
-      id: data.id,
-      name: data.name,
-      email: data.email,
-      entries: data.entries,
-      joined: data.joined
-    }})
-  }
 
   calculateBoxLocation = (data) => {
     const image = document.getElementById('inputImage');
@@ -58,8 +38,8 @@ class App extends Component {
     })
   };
 
-  displayFaceBox = (box) => {
-    this.setState({ boxes: box });
+  displayFaceBox = (boxes) => {
+    this.setState({ boxes });
     //console.log(box);
   }
 
@@ -80,60 +60,23 @@ class App extends Component {
     })
     .then(response => response.json())
     .then(result => {
-      console.log('hi', result);
       if (result) {
-        fetch('https://agile-brushlands-08884-f69c8fdf1fe8.herokuapp.com/image', 
-        //fetch('http://localhost:3000/image', 
-        {
-          method: 'put',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify(
-          {
-            id: this.state.user.id
-          })
-        })
-          .then(response => response.json())
-          .then(count => {
-            this.setState(Object.assign(this.state.user, { entries: count })) //somehow magic that updates instead of changes 'user'
-          })
-          .catch(console.log)
+        this.displayFaceBox(this.calculateBoxLocation(result));
       }
-      this.displayFaceBox(this.calculateBoxLocation(result))    //answer: setState is asynchronous, so React hadn't finished updating imageUrl's state. Can fix w/ a callback setState(updater, callback)function(response) {     //from https://www.clarifai.com/models/face-detection-image-recognition-model-a403429f2ddf4b49b307e318f00e528b-detection
     })
-    .catch(err => console.log("error", err));
+    .catch(err => console.log('Error:', err));
   };
 
-  onRouteChange = (route) => {
-    if (route === 'signout') {
-      this.setState(initialState)
-    }
-    else if (route === 'home') {
-      this.setState({ isSignedIn: true })
-    }
-    this.setState({ route: route });
-  }
-
   render() {
-    const { isSignedIn, imageUrl, route, boxes } = this.state;
+    const { input, imageUrl, boxes } = this.state;
     return (
       <div className="App">
-        <ParticlesBg color="#d6d6d6" type="cobweb" bg={true} />
-        <Navigation isSignedIn={ isSignedIn } onRouteChange={ this.onRouteChange }/>
-        { route === 'home' 
-          ? <div>
-              <Logo />
-              <Rank name={ this.state.user.name } entries={ this.state.user.entries }/>
-              <ImageLinkForm 
-                onInputChange={ this.onInputChange } 
-                onButtonSubmit={ this.onButtonSubmit } />
-              <FacialRecognition boxes={ boxes } imageUrl={ imageUrl }/>
-            </div> 
-          : (
-              route === 'signin' 
-              ? <Signin loadUser={ this.loadUser } onRouteChange={ this.onRouteChange } />
-              : <Register loadUser={ this.loadUser } onRouteChange={ this.onRouteChange } />
-            )
-        }
+        <ParticlesBg color="#d6d6d6" type="cobweb" bg={true} /> 
+        <Logo />
+        <ImageLinkForm 
+          onInputChange={ this.onInputChange } 
+          onButtonSubmit={ this.onButtonSubmit } />
+        <FacialRecognition boxes={ boxes } imageUrl={ imageUrl }/>
       </div>
     );
 
