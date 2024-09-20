@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
-//import Particles from 'react-particles-js';
 import ParticlesBg from 'particles-bg';
-import Navigation from './components/Navigation/Navigation';
 import Logo from './components/Logo/Logo';
-import Rank from './components/Rank/Rank';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import FacialRecognition from './components/FacialRecognition/FacialRecognition';
-import Signin from './components/Signin/Signin';
-import Register from './components/Register/Register';
+import imageCompression from 'browser-image-compression';
 import './App.css';
 
 const initialState = {
@@ -20,9 +16,30 @@ const initialState = {
 class App extends Component {
   constructor() {
     super();
-    this.state = initialState;
+    this.state = {
+      ...initialState,
+      file:null,
+    };
   }
 
+  onFileChange = async (event) => {
+    const file = event.target.files[0];
+    const options = {
+      maxSizeMB: 1,          // Limit the file size to 1MB
+      maxWidthOrHeight: 800, // Adjust to your preference
+      useWebWorker: true,
+    };
+    try {
+      const compressedFile = await imageCompression(file, options);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        this.setState({ file: reader.result });
+      };
+      reader.readAsDataURL(compressedFile);  // Convert compressed file to base64
+    } catch (error) {
+      console.error('Error compressing image:', error);
+    }
+  };
 
   calculateBoxLocation = (data) => {
     const image = document.getElementById('inputImage');
@@ -49,28 +66,49 @@ class App extends Component {
   }
 
   onButtonSubmit = () => {
-    this.setState({ imageUrl: this.state.input });
-    fetch('https://agile-brushlands-08884-f69c8fdf1fe8.herokuapp.com/imageurl', 
-    {
-      method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(
-      {
-        input: this.state.input
+    if (this.state.file) {
+      // Handle file upload
+      this.setState({ imageUrl: this.state.file });
+      fetch('https://agile-brushlands-08884-f69c8fdf1fe8.herokuapp.com/imageurl', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          file: this.state.file,  // Send the base64 file to backend
+        }),
       })
-    })
-    .then(response => response.json())
-    .then(result => {
-      if (result) {
-        this.displayFaceBox(this.calculateBoxLocation(result));
-        this.setState(prevState => {
-          const newCount = prevState.submissionCount + 1;
-          sessionStorage.setItem('submissionCount', newCount);  // Save to sessionStorage
-          return { submissionCount: newCount };
-        });
-      }
-    })
-    .catch(err => console.log('Error:', err));
+        .then(response => response.json())
+        .then(result => {
+          if (result) {
+            this.displayFaceBox(this.calculateBoxLocation(result));
+            this.setState(prevState => {
+              const newCount = prevState.submissionCount + 1;
+              sessionStorage.setItem('submissionCount', newCount);
+              return { submissionCount: newCount };
+            });
+          }
+        })
+        .catch(err => console.log('Error:', err));
+    } else if (this.state.input) {
+      // Handle image URL submission (as it already works)
+      this.setState({ imageUrl: this.state.input });
+      fetch('https://agile-brushlands-08884-f69c8fdf1fe8.herokuapp.com/imageurl', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ input: this.state.input }),
+      })
+        .then(response => response.json())
+        .then(result => {
+          if (result) {
+            this.displayFaceBox(this.calculateBoxLocation(result));
+            this.setState(prevState => {
+              const newCount = prevState.submissionCount + 1;
+              sessionStorage.setItem('submissionCount', newCount);
+              return { submissionCount: newCount };
+            });
+          }
+        })
+        .catch(err => console.log('Error:', err));
+    }
   };
 
   render() {
@@ -80,7 +118,8 @@ class App extends Component {
         <ParticlesBg color="#d6d6d6" type="cobweb" bg={true} /> 
         <Logo />
         <ImageLinkForm 
-          onInputChange={ this.onInputChange } 
+          onInputChange={ this.onInputChange }
+          onFileChange={this.onFileChange} 
           onButtonSubmit={ this.onButtonSubmit } />
         <h1>Submission Count: {this.state.submissionCount}</h1>
         <FacialRecognition boxes={ boxes } imageUrl={ imageUrl }/>
