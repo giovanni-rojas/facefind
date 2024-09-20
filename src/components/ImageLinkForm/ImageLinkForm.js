@@ -18,17 +18,22 @@ const ImageLinkForm = ( { onInputChange, onButtonSubmit, onFileChange, inputValu
 		  <div className='center'>
 			<div className='form center pa4 br3 shadow-5'>
 			  <input
-				className='f4 pa2 w-50 center' 
-				type='text' 
-				placeholder='Enter Image URL or upload' 
-				onChange={onInputChange} 
-				onKeyPress={handleKeyPress} 
-				value={inputValue}
+				className='f4 pa2 w-70 center' 
+				type='file'
+				id='fileInput'
+				onChange={onFileChange}
+				style={{ display: 'none' }}
 			  />
+			<label htmlFor='fileInput' className='f4 pa2 w-20 center bg-light-purple white dib grow pointer'>
+            	Browse
+          	</label>
 			  <input
-				className='f4 pa2 w-30 center ml2' 
-				type='file' 
-				onChange={onFileChange} 
+				className='f4 pa2 w-20 center ml2' // Adjust width and margin
+				type='text'
+				placeholder='Enter image URL or upload image'
+				onChange={onInputChange}
+				onKeyPress={handleKeyPress}
+				value={inputValue}
 			  />
 			  <button 
 				className='w-20 grow f4 link ph3 pv2 dib white bg-light-purple'
@@ -39,7 +44,7 @@ const ImageLinkForm = ( { onInputChange, onButtonSubmit, onFileChange, inputValu
 			</div>
 		  </div>
 		</div>
-	);
+	  );
 }
 
 export default ImageLinkForm;

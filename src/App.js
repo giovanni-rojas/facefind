@@ -35,7 +35,12 @@ class App extends Component {
   
       const reader = new FileReader();
       reader.onloadend = () => {
-        this.setState({ file: reader.result, errorMessage: '', fileName: file.name, input: file.name }); // Clear error if valid
+        this.setState({ 
+          file: reader.result, 
+          errorMessage: '', 
+          fileName: file.name, // This is for potential use later
+          input: file.name // Set the input to the file name
+        });
       };
       reader.readAsDataURL(file); // Convert the file to base64
     }

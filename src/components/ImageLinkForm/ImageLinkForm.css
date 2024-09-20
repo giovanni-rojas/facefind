@@ -8,3 +8,38 @@
 	background-color:#282828;
 	background-size:16px 16px;	
 }
+
+input::placeholder {
+	font-size: 0.8rem; /* Adjust the size as needed */
+	color: #999; /* Optional: Change the color for better visibility */
+}
+
+.form {
+	display: flex; /* Use flexbox for better alignment */
+	align-items: center; /* Center items vertically */
+  }
+  
+input[type="file"] {
+	margin-right: 8px; /* Add some space between the file input and text input */
+}
+
+label {
+	cursor: pointer; /* Make it clear that the label is clickable */
+	text-align: center; /* Center the text */
+	padding: 10px; /* Adjust padding for better appearance */
+	background-color: #d3d3d3; /* Light gray color for the button */
+	border: 1px solid #ccc; /* Add a border */
+	border-radius: 5px; /* Rounded corners */
+  }
+  
+  .form {
+	display: flex; /* Use flexbox for layout */
+	align-items: center; /* Center items vertically */
+	width: 100%; /* Make the form take full width */
+	max-width: 800px; /* Optional: Set a max width */
+  }
+  
+  input[type="text"],
+  input[type="file"] {
+	flex-grow: 1; /* Allow inputs to grow and fill available space */
+  }
