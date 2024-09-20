@@ -27,7 +27,7 @@ class App extends Component {
   onFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      const validExtensions = /\.(jpg|jpeg|png|gif)$/i; // Valid image formats
+      const validExtensions = /\.(jpg|jpeg|png|gif|bmp|webp|tiff)(\?.*)?$/i; 
       if (!validExtensions.test(file.name)) {
         this.setState({ errorMessage: 'Please upload a valid image (.jpg, .png, etc.)', file: null, fileName: '' });
         return; // Prevent further processing
@@ -47,8 +47,8 @@ class App extends Component {
   };
 
   validateImage = (url) => {
-    const validExtensions = /\.(jpg|jpeg|png|gif)$/i; // Valid image formats
-    return validExtensions.test(url);
+    const validExtensions = /\.(jpg|jpeg|png|gif|bmp|webp|tiff)(\?.*)?$/i; 
+    return (url.startsWith('http') || url.startsWith('https')) && validExtensions.test(url);
   };
 
   calculateBoxLocation = (data) => {
