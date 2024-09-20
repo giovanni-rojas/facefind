@@ -26,10 +26,11 @@ input[type="file"] {
 label {
 	cursor: pointer; /* Make it clear that the label is clickable */
 	text-align: center; /* Center the text */
-	padding: 10px; /* Adjust padding for better appearance */
+	padding: 10px 20px; /* Adjust padding for better appearance */
 	background-color: #d3d3d3; /* Light gray color for the button */
 	border: 1px solid #ccc; /* Add a border */
-	border-radius: 5px; /* Rounded corners */
+	border-radius: 4px; /* Rounded corners */
+	display: inline-block;
   }
   
   .form {
@@ -42,4 +43,17 @@ label {
   input[type="text"],
   input[type="file"] {
 	flex-grow: 1; /* Allow inputs to grow and fill available space */
+  }
+  
+  .button-active {
+	transform: scale(1.1); /* Scale up when clicked */
+	transition: transform 0.2s; /* Smooth transition */
+  }
+  
+  .button {
+	transition: transform 0.2s; /* Smooth transition for hover */
+  }
+  
+  .button:hover {
+	transform: scale(1.05); /* Scale slightly on hover */
   }

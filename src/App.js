@@ -100,12 +100,12 @@ class App extends Component {
         })
         .catch(err => {
           console.log('Error uploading file:', err);
-          this.setState({ errorMessage: 'Please enter a valid image (.jpg, .png, etc.)' });
+          this.setState({ errorMessage: 'Please enter a valid image (.jpg, .png, etc.)', input: '' });
         });
     } else if (input) {
       // Handle image URL submission (as it already works)
       if (!this.validateImage(input)) {
-        this.setState({ errorMessage: 'Please enter a valid image (.jpg, .png, etc.)'});
+        this.setState({ errorMessage: 'Please enter a valid image (.jpg, .png, etc.)', input: '' });
         return;
       }
       this.setState({ imageUrl: input })
@@ -127,7 +127,7 @@ class App extends Component {
         })
         .catch(err => {
           console.log('Error:', err);
-          this.setState({ errorMessage: 'Please enter a valid image (.jpg, .png, etc.)' });
+          this.setState({ errorMessage: 'Please enter a valid image (.jpg, .png, etc.)', input: '' });
         });
     }
   };

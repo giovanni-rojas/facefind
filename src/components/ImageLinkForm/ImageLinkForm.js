@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import './ImageLinkForm.css';
 
 const ImageLinkForm = ( { onInputChange, onButtonSubmit, onFileChange, inputValue } ) => {
+
+	const buttonRef = useRef(null);
 
 	const handleKeyPress = (event) => {
 		if (event.key === 'Enter') {
@@ -9,14 +11,26 @@ const ImageLinkForm = ( { onInputChange, onButtonSubmit, onFileChange, inputValu
 		}
 	}
 
-
+	const handleButtonClick = () => {
+		// Scale the button up
+		buttonRef.current.classList.add('button-active');
+	
+		// Trigger the submit action
+		onButtonSubmit();
+	
+		// Reset the scale after a short delay
+		setTimeout(() => {
+		  buttonRef.current.classList.remove('button-active');
+		}, 200); // Match this with the duration in CSS
+	  };
+	
 	return (
 		<div>
 		  <p className='f3'>
 			{'This app will detect faces in your picture. Give it a try!'}
 		  </p>
 		  <div className='center'>
-			<div className='form center pa4 br3 shadow-5'>
+			<div className='form center pa4 br3 shadow-5' style={{ display: "flex", alignItems: 'center', width: '100%' }}>
 			  <input
 				className='f4 pa2 w-70 center' 
 				type='file'
@@ -24,7 +38,7 @@ const ImageLinkForm = ( { onInputChange, onButtonSubmit, onFileChange, inputValu
 				onChange={onFileChange}
 				style={{ display: 'none' }}
 			  />
-			<label htmlFor='fileInput' className='f4 pa2 w-20 center bg-light-purple white dib grow pointer'>
+			<label htmlFor='fileInput' className='grow'>
             	Browse
           	</label>
 			  <input
@@ -36,8 +50,9 @@ const ImageLinkForm = ( { onInputChange, onButtonSubmit, onFileChange, inputValu
 				value={inputValue}
 			  />
 			  <button 
-				className='w-20 grow f4 link ph3 pv2 dib white bg-light-purple'
-				onClick={onButtonSubmit}
+			  	ref={buttonRef}
+				className={'w-20 grow f4 link ph3 pv2 dib white bg-light-purple'} 
+				onClick={handleButtonClick}
 			  >
 				Detect
 			  </button>
