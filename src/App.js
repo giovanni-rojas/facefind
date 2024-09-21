@@ -103,7 +103,7 @@ class App extends Component {
           this.setState({ errorMessage: 'Please enter a valid image (.jpg, .png, etc.)', input: '' });
         });
     } else if (input) {
-      const validExtensions = /\.(jpg|jpeg|png|gif|bmp|webp|tiff)$/i; 
+      const validExtensions = /\.(jpg|jpeg|png|gif|bmp|webp|tiff)(\?.*)?$/i; 
       const isValidImageUrl = validExtensions.test(input);
   
       if (!isValidImageUrl) {
