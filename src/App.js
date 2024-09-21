@@ -103,32 +103,74 @@ class App extends Component {
           this.setState({ errorMessage: 'Please enter a valid image (.jpg, .png, etc.)', input: '' });
         });
     } else if (input) {
-      // Handle image URL submission (as it already works)
-      if (!this.validateImage(input)) {
-        this.setState({ errorMessage: 'Please enter a valid image (.jpg, .png, etc.)', input: '' });
-        return;
-      }
-      this.setState({ imageUrl: input })
-      fetch('https://agile-brushlands-08884-f69c8fdf1fe8.herokuapp.com/imageurl', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ input: input }),
-      })
-        .then(response => response.json())
-        .then(result => {
-          if (result) {
-            this.displayFaceBox(this.calculateBoxLocation(result));
-            this.setState(prevState => {
-              const newCount = prevState.submissionCount + 1;
-              sessionStorage.setItem('submissionCount', newCount);
-              return { submissionCount: newCount, errorMessage: '', input: '', file: null, fileName:''};
+      const validExtensions = /\.(jpg|jpeg|png|gif|bmp|webp|tiff)$/i; 
+      const isValidImageUrl = validExtensions.test(input);
+  
+      if (!isValidImageUrl) {
+        // If the URL doesn't have a standard image extension, use the blob approach
+        fetch(input)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Image not accessible');
+            }
+            const contentType = response.headers.get('Content-Type');
+            // Check if the response is an image
+            if (!contentType || !contentType.startsWith('image/')) {
+              throw new Error('Not an image URL');
+            }
+            return response.blob(); // Get the image as a blob
+          })
+          .then(blob => {
+            // Create a local URL for the image blob
+            const url = URL.createObjectURL(blob);
+            this.setState({ imageUrl: url }); // Set the image URL
+  
+            // Now proceed to send the input to your API
+            return fetch('https://agile-brushlands-08884-f69c8fdf1fe8.herokuapp.com/imageurl', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ input: input }), // Send the input directly
             });
-          }
+          })
+          .then(response => response.json())
+          .then(result => {
+            if (result) {
+              this.displayFaceBox(this.calculateBoxLocation(result));
+              this.setState(prevState => {
+                const newCount = prevState.submissionCount + 1;
+                sessionStorage.setItem('submissionCount', newCount);
+                return { submissionCount: newCount, errorMessage: '', input: '', file: null, fileName: '' };
+              });
+            }
+          })
+          .catch(err => {
+            console.log('Error:', err);
+            this.setState({ errorMessage: 'Please enter a valid image URL.', input: '' });
+          });
+      } else {
+        // Proceed with the standard image URL processing
+        this.setState({ imageUrl: input });
+        fetch('https://agile-brushlands-08884-f69c8fdf1fe8.herokuapp.com/imageurl', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ input: input }),
         })
-        .catch(err => {
-          console.log('Error:', err);
-          this.setState({ errorMessage: 'Please enter a valid image (.jpg, .png, etc.)', input: '' });
-        });
+          .then(response => response.json())
+          .then(result => {
+            if (result) {
+              this.displayFaceBox(this.calculateBoxLocation(result));
+              this.setState(prevState => {
+                const newCount = prevState.submissionCount + 1;
+                sessionStorage.setItem('submissionCount', newCount);
+                return { submissionCount: newCount, errorMessage: '', input: '', file: null, fileName: '' };
+              });
+            }
+          })
+          .catch(err => {
+            console.log('Error:', err);
+            this.setState({ errorMessage: 'Please enter a valid image (.jpg, .png, etc.)', input: '' });
+          });
+      }
     }
   };
 
