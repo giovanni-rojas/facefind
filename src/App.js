@@ -98,8 +98,8 @@ class App extends Component {
                 this.displayFaceBox(this.calculateBoxLocation(result));
                 this.setState(prevState => {
                   const newCount = prevState.facesDetected + faceCount;
-                  sessionStorage.setItem('facesDetected', newCount);
-                  return { facesDetected: newCount,  errorMessage: '', input: '', file: null, fileName: ''};
+                  sessionStorage.setItem('facesDetected', faceCount);
+                  return { facesDetected: faceCount,  errorMessage: '', input: '', file: null, fileName: ''};
                 });
               };
             });
@@ -142,8 +142,8 @@ class App extends Component {
                     this.displayFaceBox(this.calculateBoxLocation(result));
                     this.setState(prevState => {
                       const newCount = prevState.facesDetected + faceCount;
-                      sessionStorage.setItem('facesDetected', newCount);
-                      return { facesDetected: newCount, errorMessage: '', input: '', file: null, fileName: '' };
+                      sessionStorage.setItem('facesDetected', faceCount);
+                      return { facesDetected: faceCount, errorMessage: '', input: '', file: null, fileName: '' };
                     });
                   }
                 })
@@ -176,8 +176,8 @@ class App extends Component {
                 this.displayFaceBox(this.calculateBoxLocation(result));
                 this.setState(prevState => {
                   const newCount = prevState.facesDetected + faceCount;
-                  sessionStorage.setItem('facesDetected', newCount);
-                  return { facesDetected: newCount, errorMessage: '', input: '', file: null, fileName: '' };
+                  sessionStorage.setItem('facesDetected', faceCount);
+                  return { facesDetected: faceCount, errorMessage: '', input: '', file: null, fileName: '' };
                 });
               }
             })
