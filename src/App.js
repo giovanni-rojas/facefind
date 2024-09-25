@@ -10,6 +10,7 @@ const initialState = {
   imageUrl: '',
   boxes: [],
   file: null,
+  facesDetected: 0,
   submissionCount: sessionStorage.getItem('submissionCount') ? parseInt(sessionStorage.getItem('submissionCount')) : 0,
   errorMessage: '',
   fileName: '',
@@ -90,11 +91,17 @@ class App extends Component {
         .then(response => response.json())
         .then(result => {
           if (result) {
-            this.displayFaceBox(this.calculateBoxLocation(result));
-            this.setState(prevState => {
-              const newCount = prevState.submissionCount + 1;
-              sessionStorage.setItem('submissionCount', newCount);
-              return { submissionCount: newCount,  errorMessage: '', input: '', file: null, fileName: '', imageUrl: file };
+            this.setState({ imageUrl: file }, () => {
+              const image = document.getElementById('inputImage');
+              image.onload = () => {
+                const faceCount = result.length;
+                this.displayFaceBox(this.calculateBoxLocation(result));
+                this.setState(prevState => {
+                  const newCount = prevState.facesDetected + faceCount;
+                  sessionStorage.setItem('facesDetected', newCount);
+                  return { facesDetected: newCount,  errorMessage: '', input: '', file: null, fileName: ''};
+                });
+              };
             });
           }
         })
@@ -107,75 +114,85 @@ class App extends Component {
       const isValidImageUrl = validExtensions.test(input);
   
       if (!isValidImageUrl) {
-        // If the URL doesn't have a standard image extension, use the blob approach
         fetch(input)
           .then(response => {
             if (!response.ok) {
               throw new Error('Image not accessible');
             }
             const contentType = response.headers.get('Content-Type');
-            // Check if the response is an image
             if (!contentType || !contentType.startsWith('image/')) {
               throw new Error('Not an image URL');
             }
-            return response.blob(); // Get the image as a blob
+            return response.blob();
           })
           .then(blob => {
-            // Create a local URL for the image blob
             const url = URL.createObjectURL(blob);
-            this.setState({ imageUrl: url }); // Set the image URL
-  
-            // Now proceed to send the input to your API
-            return fetch('https://agile-brushlands-08884-f69c8fdf1fe8.herokuapp.com/imageurl', {
+            this.setState({ imageUrl: url }, () => { // Set the image URL
+              const image = document.getElementById('inputImage');
+              image.onload = () => {
+                fetch('https://agile-brushlands-08884-f69c8fdf1fe8.herokuapp.com/imageurl', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ input: input }), // Send the input directly
+                })
+                .then(response => response.json())
+                .then(result => {
+                  if (result) {
+                    const faceCount = result.length;
+                    this.displayFaceBox(this.calculateBoxLocation(result));
+                    this.setState(prevState => {
+                      const newCount = prevState.facesDetected + faceCount;
+                      sessionStorage.setItem('facesDetected', newCount);
+                      return { facesDetected: newCount, errorMessage: '', input: '', file: null, fileName: '' };
+                    });
+                  }
+                })
+                .catch(err => {
+                  console.log('Error:', err);
+                  this.setState({ errorMessage: 'Please enter a valid image URL.', input: '' });
+                });
+              };
+            });
+        })
+        .catch(err => {
+          console.log('Error:', err);
+          this.setState({ errorMessage: 'Please enter a valid image URL.', input: '' });
+        });
+      } 
+      else {
+      // Proceed with the standard image URL processing
+        this.setState({ imageUrl: input }, () => {
+          const image = document.getElementById('inputImage');
+          image.onload = () => {
+            fetch('https://agile-brushlands-08884-f69c8fdf1fe8.herokuapp.com/imageurl', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ input: input }), // Send the input directly
+              body: JSON.stringify({ input: input }),
+            })
+            .then(response => response.json())
+            .then(result => {
+              if (result) {
+                const faceCount = result.length;
+                this.displayFaceBox(this.calculateBoxLocation(result));
+                this.setState(prevState => {
+                  const newCount = prevState.facesDetected + faceCount;
+                  sessionStorage.setItem('facesDetected', newCount);
+                  return { facesDetected: newCount, errorMessage: '', input: '', file: null, fileName: '' };
+                });
+              }
+            })
+            .catch(err => {
+              console.log('Error:', err);
+              this.setState({ errorMessage: 'Please enter a valid image (.jpg, .png, etc.)', input: '' });
             });
-          })
-          .then(response => response.json())
-          .then(result => {
-            if (result) {
-              this.displayFaceBox(this.calculateBoxLocation(result));
-              this.setState(prevState => {
-                const newCount = prevState.submissionCount + 1;
-                sessionStorage.setItem('submissionCount', newCount);
-                return { submissionCount: newCount, errorMessage: '', input: '', file: null, fileName: '' };
-              });
-            }
-          })
-          .catch(err => {
-            console.log('Error:', err);
-            this.setState({ errorMessage: 'Please enter a valid image URL.', input: '' });
-          });
-      } else {
-        // Proceed with the standard image URL processing
-        this.setState({ imageUrl: input });
-        fetch('https://agile-brushlands-08884-f69c8fdf1fe8.herokuapp.com/imageurl', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ input: input }),
-        })
-          .then(response => response.json())
-          .then(result => {
-            if (result) {
-              this.displayFaceBox(this.calculateBoxLocation(result));
-              this.setState(prevState => {
-                const newCount = prevState.submissionCount + 1;
-                sessionStorage.setItem('submissionCount', newCount);
-                return { submissionCount: newCount, errorMessage: '', input: '', file: null, fileName: '' };
-              });
-            }
-          })
-          .catch(err => {
-            console.log('Error:', err);
-            this.setState({ errorMessage: 'Please enter a valid image (.jpg, .png, etc.)', input: '' });
-          });
+          };
+        });
       }
-    }
-  };
+  }
+};
 
   render() {
-    const { input, imageUrl, boxes, fileName, errorMessage } = this.state;
+    const { input, imageUrl, boxes, facesDetected, errorMessage } = this.state;
     return (
       <div className="App">
         <ParticlesBg color="#d6d6d6" type="cobweb" bg={true} /> 
@@ -187,7 +204,7 @@ class App extends Component {
           inputValue={input}
         />
         {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
-        <h1>Submission Count: {this.state.submissionCount}</h1>
+        <h1>Faces Detected: {facesDetected}</h1>
         <FacialRecognition boxes={ boxes } imageUrl={ imageUrl }/>
       </div>
     );
