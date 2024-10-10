@@ -20,7 +20,7 @@ To run this project locally, you will need Node.js installed.
 1. Clone the repository:
    ```bash
    git clone https://github.com/your-username/facefind.git
-   cd SpeedTester
+   cd facefind
    ```
 2. Install dependencies:
     ```bash
