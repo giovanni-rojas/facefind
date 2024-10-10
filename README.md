@@ -1,4 +1,4 @@
-# facefind
+# Facefind
 ![Facefind Demo](public/facefindDemo.gif)
 
 ## Overview
