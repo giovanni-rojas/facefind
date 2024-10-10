@@ -1,11 +1,13 @@
 import React from 'react';
+import DOMPurify from 'dompurify';
 import './FacialRecognition.css';
 
 const FacialRecognition = ({ imageUrl, boxes }) => {
+	const sanitizedImageUrl = DOMPurify.sanitize(imageUrl);
 	return (
 	  <div className='center ma'>
 		<div className='absolute mt2'>
-		  <img id='inputImage' alt='' src={imageUrl} width='500px' height='auto' />
+		  <img id='inputImage' alt='' src={ sanitizedImageUrl } width='500px' height='auto' />
 		  {boxes.map((box, index) => (
 			<div
 			  key={index}

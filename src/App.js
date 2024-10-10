@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import DOMPurify from 'dompurify';
 import ParticlesBg from 'particles-bg';
 import Logo from './components/Logo/Logo';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
@@ -73,7 +74,8 @@ class App extends Component {
   }
 
   onInputChange = (event) => {
-    this.setState({input: event.target.value });
+    const sanitizedInput = DOMPurify.sanitize(event.target.value);
+    this.setState({input: sanitizedInput });
   }
 
   onButtonSubmit = () => {
