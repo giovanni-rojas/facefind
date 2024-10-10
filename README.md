@@ -1,68 +1,73 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# facefind
+![Facefind Demo](public/facefindDemo.gif)
 
-## Available Scripts
+## Overview
+[Facefind](https://face-find-d1246eeab4c8.herokuapp.com/) is a React app that detects and counts faces in images using [Clarifai's Face Detection Model](https://clarifai.com/clarifai/main/models/face-detection) API.
 
-In the project directory, you can run:
+## How It Works
+Users can upload an image directly from their device or enter a link to an image found online. The image is sent to a backend Heroku server, which works with the Clarifai API to analyze the image and detect faces. The app displays the original image with boxes drawn around each detected face, along with the total number of faces identified in the picture.
 
-### `npm start`
+### Key Features
+- **User-Friendly Interface**: Simple input fields for uploading images from your device or entering image URLs.
+- **Face Detection**: Leverages Clarifai's Face Detection Model to accurately identify faces in images.
+- **Live Results**: Displays the number of detected faces in the submitted image.
+- **Responsive Design**: Optimized for both desktop and mobile devices.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Usage
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+To run this project locally, you will need Node.js installed.
 
-### `npm test`
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/facefind.git
+   cd SpeedTester
+   ```
+2. Install dependencies:
+    ```bash
+    npm install
+    ```
+3. Start development server:
+    ```bash
+    npm start
+    ```
+4. Build for production:
+    ```bash
+    npm run build
+    ```
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Backend Requirements
+This project implements the app's frontend. For the app to function properly, it needs to connect to a suitable backend server to manage the full data flow for sending requests to Clarifai. See [https://github.com/giovanni-rojas/facefind-api](https://github.com/giovanni-rojas/facefind-api).
 
-### `npm run build`
+## Contributing
+Contributions are welcome! Here's how you can contribute:
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. **Fork the repository**: Click the "Fork" button on the top right of the GitHub page to create your own copy.
+2. **Clone the forked repository** to your local machine:
+   ```bash
+   git clone https://github.com/your-username/facefind.git
+    ```
+3. **Create a new branch** for your feature or bug fix:
+    ```bash
+    git checkout -b feature-name
+    ```
+4. **Make your changes** and commit them:
+    ```bash
+    git commit -m "Add feature name or fix description"
+    ```
+5. **Push your changes** to your fork:
+    ```bash
+    git push origin feature-name
+    ```
+6. **Create a pull request:** Once your changes are pushed, go to the original repository and create a pull request to merge your changes into the main project.
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+Please open an issue or start a discussion before submitting large changes. Contributions that improve the app or address existing issues are appreciated!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## History
+- **Version 1.0.0**: Initial release. Support for nearly all valid image formats (.png, .jpg, etc.).
 
-### `npm run eject`
+## Credits
+- **Clarifai**: Uses [Clarifai's Face Detection Model](https://clarifai.com/clarifai/main/models/face-detection) API, using machine learning to identify and analyze faces in images. Visit [Clarifai](https://clarifai.com) for more information on all of their services.
+- **[Andrei Neagoi](https://github.com/aneagoie)**: This app is the final project for Andrei Neagoi's [ZTM: The Complete Web Developer](https://zerotomastery.io/courses/coding-bootcamp/) course.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+## License
+Facefind is released under the [MIT License](https://opensource.org/license/MIT).
