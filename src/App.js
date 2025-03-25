@@ -6,6 +6,8 @@ import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import FacialRecognition from './components/FacialRecognition/FacialRecognition';
 import './App.css';
 
+const API_URL = process.env.REACT_APP_API_URL || 'https://facefind-p69lcra66-gios-projects-f2f8301a.vercel.app';
+
 const initialState = {
   input: '',
   imageUrl: '',
@@ -24,6 +26,17 @@ class App extends Component {
     this.state = {
       ...initialState
     };
+  }
+
+  componentDidMount() {
+    // Simple health check
+    fetch(`${API_URL}/`)
+      .then(response => {
+        console.log('Backend health check status:', response.status);
+        return response.text();
+      })
+      .then(data => console.log('Backend response:', data))
+      .catch(err => console.error('Backend health check failed:', err));
   }
 
   onFileChange = (event) => {
@@ -79,19 +92,32 @@ class App extends Component {
   }
 
   onButtonSubmit = () => {
-
     const { file, input } = this.state;
+    console.log('Starting onButtonSubmit with:', { hasFile: !!file, hasInput: !!input });
 
     if (file) {
-      fetch('https://agile-brushlands-08884-f69c8fdf1fe8.herokuapp.com/imageurl', {
+      console.log('Processing file upload');
+      fetch(`${API_URL}/imageurl`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
-          file: file,  // Send the base64 file to backend
+          file: file,
         }),
       })
-        .then(response => response.json())
+        .then(response => {
+          console.log('File upload response status:', response.status);
+          if (!response.ok) {
+            return response.text().then(text => {
+              console.error('Server response:', text);
+              throw new Error(`HTTP error! status: ${response.status}`);
+            });
+          }
+          return response.json();
+        })
         .then(result => {
+          console.log('Received result:', result);
           if (result) {
             this.setState({ imageUrl: file }, () => {
               const image = document.getElementById('inputImage');
@@ -108,16 +134,22 @@ class App extends Component {
           }
         })
         .catch(err => {
-          console.log('Error uploading file:', err);
+          console.error('Detailed error in file upload:', err);
           this.setState({ errorMessage: 'Please enter a valid image (.jpg, .png, etc.)', input: '' });
+          this.setState({ 
+            errorMessage: `Error processing image: ${err.message}`, 
+            input: '' 
+          });
         });
     } else if (input) {
+      console.log('Processing URL input:', input);
       const validExtensions = /\.(jpg|jpeg|png|gif|bmp|webp|tiff)(\?.*)?$/i; 
       const isValidImageUrl = validExtensions.test(input);
   
       if (!isValidImageUrl) {
         fetch(input)
           .then(response => {
+            console.log('URL image response status:', response.status);
             if (!response.ok) {
               throw new Error('Image not accessible');
             }
@@ -132,12 +164,24 @@ class App extends Component {
             this.setState({ imageUrl: url }, () => { // Set the image URL
               const image = document.getElementById('inputImage');
               image.onload = () => {
-                fetch('https://agile-brushlands-08884-f69c8fdf1fe8.herokuapp.com/imageurl', {
+                fetch(`${API_URL}/imageurl`, {
                   method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ input: input }), // Send the input directly
+                  headers: { 
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ 
+                    input: input 
+                  }),
                 })
-                .then(response => response.json())
+                .then(response => {
+                  if (!response.ok) {
+                    return response.text().then(text => {
+                      console.error('Server response:', text);
+                      throw new Error(`HTTP error! status: ${response.status}`);
+                    });
+                  }
+                  return response.json();
+                })
                 .then(result => {
                   if (result) {
                     const faceCount = result.length;
@@ -150,14 +194,19 @@ class App extends Component {
                   }
                 })
                 .catch(err => {
-                  console.log('Error:', err);
                   this.setState({ errorMessage: 'Please enter a valid image URL.', input: '' });
+                  console.error('Detailed error:', err);
+                  this.setState({ 
+                    errorMessage: `Error processing image: ${err.message}`, 
+                    input: '' 
+                  });
                 });
               };
             });
         })
         .catch(err => {
           console.log('Error:', err);
+          console.error('Detailed error:', err);
           this.setState({ errorMessage: 'Please enter a valid image URL.', input: '' });
         });
       } 
@@ -166,12 +215,25 @@ class App extends Component {
         this.setState({ imageUrl: input }, () => {
           const image = document.getElementById('inputImage');
           image.onload = () => {
-            fetch('https://agile-brushlands-08884-f69c8fdf1fe8.herokuapp.com/imageurl', {
+            fetch(`${API_URL}/imageurl`, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ input: input }),
+              headers: { 
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ 
+                input: input 
+              }),
             })
-            .then(response => response.json())
+            .then(response => {
+              console.log('Regular image response status:', response.status);
+              if (!response.ok) {
+                return response.text().then(text => {
+                  console.error('Server response:', text);
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                });
+              }
+              return response.json();
+            })
             .then(result => {
               if (result) {
                 const faceCount = result.length;
@@ -184,8 +246,12 @@ class App extends Component {
               }
             })
             .catch(err => {
-              console.log('Error:', err);
-              this.setState({ errorMessage: 'Please enter a valid image (.jpg, .png, etc.)', input: '' });
+              this.setState({ errorMessage: 'Please enter a valid image URL.', input: '' });
+              console.error('Detailed error in regular image URL processing:', err);
+              this.setState({ 
+                errorMessage: `Error processing image: ${err.message}`, 
+                input: '' 
+              });
             });
           };
         });
@@ -200,9 +266,9 @@ class App extends Component {
         <ParticlesBg color="#d6d6d6" type="cobweb" bg={true} /> 
         <Logo />
         <ImageLinkForm 
-          onInputChange={ this.onInputChange }
+          onInputChange={this.onInputChange}
           onFileChange={this.onFileChange} 
-          onButtonSubmit={ this.onButtonSubmit }
+          onButtonSubmit={this.onButtonSubmit}
           inputValue={input}
         />
         {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
