@@ -67,7 +67,7 @@ Please open an issue or start a discussion before submitting large changes. Cont
 
 ## Credits
 - **Clarifai**: Uses [Clarifai's Face Detection Model](https://clarifai.com/clarifai/main/models/face-detection) API, using machine learning to identify and analyze faces in images. Visit [Clarifai](https://clarifai.com) for more information on all of their services.
-- **[Andrei Neagoi](https://github.com/aneagoie)**: This app is the final project for Andrei Neagoi's [ZTM: The Complete Web Developer](https://zerotomastery.io/courses/coding-bootcamp/) course.
+- **[Andrei Neagoi](https://github.com/aneagoie)**: This app is the final project for Andrei Neagoi's [ZTM: The Complete Web Developer](https://zerotomastery.io/courses/coding-bootcamp/) course. 
 
 ## License
 Facefind is released under the [MIT License](https://opensource.org/license/MIT).
