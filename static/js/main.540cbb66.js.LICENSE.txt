@@ -9,15 +9,15 @@
 */
 
 /*!
-* RAFManager v0.1.0
+* raf-manager v0.3.3
 *
-* Copyright 2018-2018, ajiemath <ajiemath@gmail.com>
+* Copyright 2018-2025, drawcall <co***@gmail.com>
 * Licensed under the MIT license
 * http://www.opensource.org/licenses/mit-license
 *
 */
 
-/*! @license DOMPurify 3.1.7 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.1.7/LICENSE */
+/*! @license DOMPurify 3.3.0 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.3.0/LICENSE */
 
 /**
  * @license React

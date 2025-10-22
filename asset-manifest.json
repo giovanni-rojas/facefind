@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/facefind/static/css/main.63888d23.css",
-    "main.js": "/facefind/static/js/main.d569c233.js",
+    "main.css": "/facefind/static/css/main.16357139.css",
+    "main.js": "/facefind/static/js/main.540cbb66.js",
     "index.html": "/facefind/index.html",
-    "main.63888d23.css.map": "/facefind/static/css/main.63888d23.css.map",
-    "main.d569c233.js.map": "/facefind/static/js/main.d569c233.js.map"
+    "main.16357139.css.map": "/facefind/static/css/main.16357139.css.map",
+    "main.540cbb66.js.map": "/facefind/static/js/main.540cbb66.js.map"
   },
   "entrypoints": [
-    "static/css/main.63888d23.css",
-    "static/js/main.d569c233.js"
+    "static/css/main.16357139.css",
+    "static/js/main.540cbb66.js"
   ]
 }
