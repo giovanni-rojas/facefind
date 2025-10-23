@@ -32,10 +32,10 @@ class App extends Component {
     // Simple health check
     fetch(`${API_URL}/`)
       .then(response => {
-        console.log('Backend health check status:', response.status);
+        //console.log('Backend health check status:', response.status);
         return response.text();
       })
-      .then(data => console.log('Backend response:', data))
+      .then(data => //console.log('Backend response:', data))
       .catch(err => console.error('Backend health check failed:', err));
   }
 
@@ -93,10 +93,10 @@ class App extends Component {
 
   onButtonSubmit = () => {
     const { file, input } = this.state;
-    console.log('Starting onButtonSubmit with:', { hasFile: !!file, hasInput: !!input });
+    //console.log('Starting onButtonSubmit with:', { hasFile: !!file, hasInput: !!input });
 
     if (file) {
-      console.log('Processing file upload');
+      //console.log('Processing file upload');
       fetch(`${API_URL}/imageurl`, {
         method: 'POST',
         headers: { 
@@ -107,7 +107,7 @@ class App extends Component {
         }),
       })
         .then(response => {
-          console.log('File upload response status:', response.status);
+          //console.log('File upload response status:', response.status);
           if (!response.ok) {
             return response.text().then(text => {
               console.error('Server response:', text);
@@ -117,7 +117,7 @@ class App extends Component {
           return response.json();
         })
         .then(result => {
-          console.log('Received result:', result);
+          //console.log('Received result:', result);
           if (result) {
             this.setState({ imageUrl: file }, () => {
               const image = document.getElementById('inputImage');
@@ -142,14 +142,14 @@ class App extends Component {
           });
         });
     } else if (input) {
-      console.log('Processing URL input:', input);
+      //console.log('Processing URL input:', input);
       const validExtensions = /\.(jpg|jpeg|png|gif|bmp|webp|tiff)(\?.*)?$/i; 
       const isValidImageUrl = validExtensions.test(input);
   
       if (!isValidImageUrl) {
         fetch(input)
           .then(response => {
-            console.log('URL image response status:', response.status);
+            //console.log('URL image response status:', response.status);
             if (!response.ok) {
               throw new Error('Image not accessible');
             }
@@ -205,7 +205,7 @@ class App extends Component {
             });
         })
         .catch(err => {
-          console.log('Error:', err);
+          //console.log('Error:', err);
           console.error('Detailed error:', err);
           this.setState({ errorMessage: 'Please enter a valid image URL.', input: '' });
         });
@@ -225,7 +225,7 @@ class App extends Component {
               }),
             })
             .then(response => {
-              console.log('Regular image response status:', response.status);
+              //console.log('Regular image response status:', response.status);
               if (!response.ok) {
                 return response.text().then(text => {
                   console.error('Server response:', text);
