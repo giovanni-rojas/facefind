@@ -6,7 +6,7 @@ import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import FacialRecognition from './components/FacialRecognition/FacialRecognition';
 import './App.css';
 
-const API_URL = process.env.REACT_APP_API_URL || 'https://facefind-p69lcra66-gios-projects-f2f8301a.vercel.app';
+const API_URL = process.env.REACT_APP_API_URL
 
 const initialState = {
   input: '',
