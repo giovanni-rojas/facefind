@@ -35,7 +35,7 @@ class App extends Component {
         //console.log('Backend health check status:', response.status);
         return response.text();
       })
-      .then(data => //console.log('Backend response:', data))
+      .then(data => console.log('Backend response:', data))
       .catch(err => console.error('Backend health check failed:', err));
   }
 
