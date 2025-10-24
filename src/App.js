@@ -83,7 +83,6 @@ class App extends Component {
 
   displayFaceBox = (boxes) => {
     this.setState({ boxes });
-    //console.log(box);
   }
 
   onInputChange = (event) => {
