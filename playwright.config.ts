@@ -8,7 +8,7 @@ export default defineConfig({
     },
     retries: 1,
     use: {
-        baseURL: 'https://giovanni-rojas.github.io/facefind/',
+        baseURL: 'https://giovanni-rojas.github.io/facefind',
         trace: 'on-first-retry',
         screenshot: 'only-on-failure',
         video: 'on-first-retry',
